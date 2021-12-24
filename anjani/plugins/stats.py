@@ -1,4 +1,5 @@
 """Bot stats plugin"""
+
 # Copyright (C) 2020 - 2021  UserbotIndo Team, <https://github.com/userbotindo.git>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -21,7 +22,7 @@ from pyrogram.types import Message
 
 from anjani import command, filters, plugin, util
 
-USEC_PER_HOUR = 60 * 60 * 1000000
+USEC_PER_HOUR = 60**2 * 1000000
 USEC_PER_DAY = USEC_PER_HOUR * 24
 
 

@@ -90,13 +90,12 @@ def build_button(buttons: Button) -> InlineKeyboardMarkup:
 
 def revert_button(button: Button) -> str:
     """Revert button format"""
-    res = ""
-    for btn in button:
-        if btn[2]:
-            res += f"\n[{btn[0]}](buttonurl://{btn[1]}:same)"
-        else:
-            res += f"\n[{btn[0]}](buttonurl://{btn[1]})"
-    return res
+    return "".join(
+        f"\n[{btn[0]}](buttonurl://{btn[1]}:same)"
+        if btn[2]
+        else f"\n[{btn[0]}](buttonurl://{btn[1]})"
+        for btn in button
+    )
 
 
 def parse_button(text: str) -> Tuple[str, Button]:
@@ -236,9 +235,9 @@ async def get_chat_admins(
 ) -> AsyncGenerator[ChatMember, None]:
     member: ChatMember
     async for member in client.iter_chat_members(chat, filter="administrators"):  # type: ignore
-        if member.status in {"administrator", "creator"}:
-            if exclude_bot and member.user.is_bot:
-                continue
+        if member.status in {"administrator", "creator"} and (
+            not exclude_bot or not member.user.is_bot
+        ):
             yield member
 
 

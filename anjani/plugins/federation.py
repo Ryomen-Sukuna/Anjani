@@ -449,10 +449,7 @@ class Federation(plugin.Plugin):
         text = await self.text(chat.id, "fed-admin-text", data["name"], util.tg.mention(owner))
         if len(data.get("admins", [])) != 0:
             text += "\nAdmins:\n"
-            admins = []
-            for admin in data["admins"]:
-                admins.append(admin)
-
+            admins = list(data["admins"])
             admins = await self.bot.client.get_users(admins)
             for admin in admins:
                 text += f" • {util.tg.mention(admin)}\n"
@@ -505,10 +502,7 @@ class Federation(plugin.Plugin):
         if not reason:
             reason = "No reason given."
 
-        update = False
-        if str(user.id) in data.get("banned", {}).keys():
-            update = True
-
+        update = str(user.id) in data.get("banned", {}).keys()
         fullname = user.first_name + user.last_name if user.last_name else user.first_name
         await self.fban_user(data["_id"], user.id, fullname=fullname, reason=reason)
 
@@ -652,11 +646,7 @@ class Federation(plugin.Plugin):
 
             return await self.text(chat.id, "fed-stat-multi-not-banned")
 
-        if reply_msg:
-            user = reply_msg.from_user
-        else:
-            user = ctx.msg.from_user
-
+        user = reply_msg.from_user if reply_msg else ctx.msg.from_user
         cursor = await self.check_fban(user.id)
         if cursor:
             text = await self.text(chat.id, "fed-stat-multi")

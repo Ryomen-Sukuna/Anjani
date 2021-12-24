@@ -63,11 +63,7 @@ class AsyncBase:
         self.dispatch = dispatch
 
     def __eq__(self, other: Any) -> bool:
-        if (
-            isinstance(other, self.__class__)
-            and hasattr(self, "dispatch")
-            and hasattr(self, "dispatch")
-        ):
+        if isinstance(other, self.__class__) and hasattr(self, "dispatch"):
             return self.dispatch == other.dispatch
 
         return NotImplemented

@@ -166,7 +166,7 @@ class Users(plugin.Plugin):
         """User Info"""
         text = f"**{'Bot' if user.is_bot else 'User'} Info**\n\n"
         text += f"**ID:** `{user.id}`\n"
-        text += f"**DC ID: **`{user.dc_id if user.dc_id else 'N/A'}`\n"
+        text += f'**DC ID: **`{user.dc_id or "N/A"}`\n'
         text += f"**First Name: **{user.first_name}\n"
         if user.last_name:
             text += f"**Last Name: **`{user.last_name}`\n"

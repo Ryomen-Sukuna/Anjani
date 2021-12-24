@@ -61,10 +61,7 @@ class AsyncCursorBase(AsyncBase):
     ) -> None:
         super().__init__(cursor)
 
-        if collection:
-            self.collection = collection
-        else:
-            self.collection = cursor.collection
+        self.collection = collection or cursor.collection
         self.started = False
         self.closed = False
 
@@ -114,11 +111,7 @@ class AsyncCursorBase(AsyncBase):
             collection = self.collection
             fix_outgoing = collection.database._fix_outgoing  # skipcq: PYL-W0212
 
-            if length is None:
-                n = result
-            else:
-                n = min(length - len(the_list), result)
-
+            n = result if length is None else min(length - len(the_list), result)
             i = 0
             while i < n:
                 the_list.append(fix_outgoing(self._data().popleft(), collection))

@@ -47,21 +47,23 @@ class Muting(plugin.Plugin):
         if member is None:
             if ctx.args and not ctx.args[0].endswith(("s", "m", "h")):
                 return await self.text(chat_id, "no-mute-user")
-            if ctx.msg.reply_to_message and ctx.msg.reply_to_message.from_user:
-                try:
-                    member = await self.bot.client.get_chat_member(
-                        chat_id, ctx.msg.reply_to_message.from_user.id
-                    )
-                except UserNotParticipant:
-                    # User is not a participant in the chat (replying from channel discussion)
-                    user = await self.bot.client.get_users(ctx.msg.reply_to_message.from_user.id)
-                    if isinstance(user, list):
-                        user = user[0]
-                    is_member = False
-                flag = ctx.args[0] if ctx.args else ""
-            else:
+            if (
+                not ctx.msg.reply_to_message
+                or not ctx.msg.reply_to_message.from_user
+            ):
                 return await self.text(chat_id, "no-mute-user")
 
+            try:
+                member = await self.bot.client.get_chat_member(
+                    chat_id, ctx.msg.reply_to_message.from_user.id
+                )
+            except UserNotParticipant:
+                # User is not a participant in the chat (replying from channel discussion)
+                user = await self.bot.client.get_users(ctx.msg.reply_to_message.from_user.id)
+                if isinstance(user, list):
+                    user = user[0]
+                is_member = False
+            flag = ctx.args[0] if ctx.args else ""
         if is_member:
             user = member.user
 
@@ -76,10 +78,10 @@ class Muting(plugin.Plugin):
             until = util.time.extract_time(flag)
             if not until:
                 return await self.text(chat_id, "invalid-time-flag")
-        else:
-            if is_member and member.can_send_messages is False:
-                return await self.text(chat_id, "already-muted")
+        elif is_member and member.can_send_messages is False:
+            return await self.text(chat_id, "already-muted")
 
+        else:
             until = 0
 
         return await self._muter(ctx.msg, user, until, flag)

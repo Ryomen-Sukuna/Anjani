@@ -79,7 +79,7 @@ class Notes(plugin.Plugin):
     async def on_message(self, message: Message) -> None:
         """Notes hashtag trigger."""
         entity = message.entities
-        if not entity or entity and entity[0].type != "hashtag":
+        if not entity or entity[0].type != "hashtag":
             return
 
         invoker = message.text[1 : entity[0].length]
@@ -112,11 +112,7 @@ class Notes(plugin.Plugin):
         else:
             parse_mode = "markdown"
             btn_text = ""
-            if button:
-                keyb = build_button(button)
-            else:
-                keyb = button
-
+            keyb = build_button(button) if button else button
         types: int = note["type"]
         await self.bot.client.send_chat_action(chat.id, self.ACTION[types])
         try:

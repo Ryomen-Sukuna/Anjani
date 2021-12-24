@@ -138,12 +138,11 @@ class SpamShield(plugin.Plugin):
         while True:
             try:
                 async with self.bot.http.get(
-                    f"https://api.cas.chat/check?user_id={user.id}"
-                ) as res:
+                                f"https://api.cas.chat/check?user_id={user.id}"
+                            ) as res:
                     data = await res.json()
                     if data["ok"]:
-                        reason = f"https://cas.chat/query?u={user.id}"
-                        return reason
+                        return f"https://cas.chat/query?u={user.id}"
 
                     return None
             except (ContentTypeError, JSONDecodeError):

@@ -348,17 +348,18 @@ class Greeting(plugin.Plugin):
         await ctx.respond(await self.text(chat.id, "view-welcome", setting, clean_service))
         await ctx.respond(
             text
-            if text
-            else (
+            or (
                 "Empty, custom welcome message haven't set yet."
                 if not setting
-                else "Default:\n\n" + await self.text(chat.id, "default-welcome", noformat=True)
+                else "Default:\n\n"
+                + await self.text(chat.id, "default-welcome", noformat=True)
             ),
             mode="reply",
             reply_markup=button,
             parse_mode=parse_mode,
             disable_web_page_preview=True,
         )
+
         return None
 
     @command.filters(filters.admin_only)
@@ -387,11 +388,7 @@ class Greeting(plugin.Plugin):
             self.is_goodbye(chat.id), self.left_message(chat.id), self.clean_service(chat.id)
         )
 
-        if noformat:
-            parse_mode = None
-        else:
-            parse_mode = "markdown"
-
+        parse_mode = None if noformat else "markdown"
         await ctx.respond(await self.text(chat.id, "view-goodbye", setting, clean_service))
         await ctx.respond(
             text,

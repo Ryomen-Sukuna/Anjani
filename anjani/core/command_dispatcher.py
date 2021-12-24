@@ -143,9 +143,8 @@ class CommandDispatcher(MixinBase):
                     if inspect.iscoroutinefunction(cmd.filters.__call__):
                         if not await cmd.filters(client, message):
                             return False
-                    else:
-                        if not await util.run_sync(cmd.filters, client, message):
-                            return False
+                    elif not await util.run_sync(cmd.filters, client, message):
+                        return False
 
                 message.command = parts
                 return True
@@ -193,8 +192,9 @@ class CommandDispatcher(MixinBase):
                 )
             except Exception as e:  # skipcq: PYL-W0703
                 constructor_invoke = CommandInvokeError(
-                    f"raised from {type(e).__name__}: {str(e)}"
+                    f'raised from {type(e).__name__}: {e}'
                 ).with_traceback(e.__traceback__)
+
                 chat = ctx.chat
                 user = ctx.msg.from_user
                 cmd.plugin.log.error(
@@ -215,8 +215,9 @@ class CommandDispatcher(MixinBase):
             await self.dispatch_event("command", ctx, cmd)
         except Exception as e:  # skipcq: PYL-W0703
             constructor_handler = CommandHandlerError(
-                f"raised from {type(e).__name__}: {str(e)}"
+                f'raised from {type(e).__name__}: {e}'
             ).with_traceback(e.__traceback__)
+
             if cmd is not None:
                 chat = message.chat
                 user = message.from_user
